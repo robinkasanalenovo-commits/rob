@@ -16,13 +16,19 @@ declare global {
 
 app.use(
   express.json({
+    limit: "10mb",
     verify: (req: Request, _res, buf) => {
       req.rawBody = Buffer.from(buf);
     },
   }),
 );
 
-app.use(express.urlencoded({ extended: false }));
+app.use(
+  express.urlencoded({
+    extended: false,
+    limit: "10mb",
+  }),
+);
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -78,6 +84,7 @@ async function startServer() {
       const message = err?.message || "Internal Server Error";
 
       console.error("Request error:", err);
+
       if (!res.headersSent) {
         res.status(status).json({ message });
       }
