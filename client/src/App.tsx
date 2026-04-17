@@ -26,7 +26,6 @@ import DeleteAccount from "@/pages/DeleteAccount";
 import Offers from "@/pages/Offers";
 import { useStore } from "@/lib/store";
 import { useEffect, useState, useRef, useCallback } from "react";
-import { WifiOff, RefreshCw } from "lucide-react";
 
 // ─── Splash Screen ────────────────────────────────────────────────────────────
 function SplashScreen({ onDone }: { onDone: () => void }) {
@@ -45,9 +44,18 @@ function SplashScreen({ onDone }: { onDone: () => void }) {
           style={{ maxWidth: "80vw" }}
         />
         <div className="flex gap-2">
-          <span className="w-2 h-2 rounded-full bg-green-600 animate-bounce" style={{ animationDelay: "0ms" }} />
-          <span className="w-2 h-2 rounded-full bg-green-600 animate-bounce" style={{ animationDelay: "150ms" }} />
-          <span className="w-2 h-2 rounded-full bg-green-600 animate-bounce" style={{ animationDelay: "300ms" }} />
+          <span
+            className="w-2 h-2 rounded-full bg-green-600 animate-bounce"
+            style={{ animationDelay: "0ms" }}
+          />
+          <span
+            className="w-2 h-2 rounded-full bg-green-600 animate-bounce"
+            style={{ animationDelay: "150ms" }}
+          />
+          <span
+            className="w-2 h-2 rounded-full bg-green-600 animate-bounce"
+            style={{ animationDelay: "300ms" }}
+          />
         </div>
       </div>
     </div>
@@ -56,13 +64,17 @@ function SplashScreen({ onDone }: { onDone: () => void }) {
 
 // ─── No Internet Overlay ──────────────────────────────────────────────────────
 function NoInternetOverlay() {
-  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [isOffline, setIsOffline] = useState(
+    typeof navigator !== "undefined" ? !navigator.onLine : false
+  );
 
   useEffect(() => {
     const goOffline = () => setIsOffline(true);
     const goOnline = () => setIsOffline(false);
+
     window.addEventListener("offline", goOffline);
     window.addEventListener("online", goOnline);
+
     return () => {
       window.removeEventListener("offline", goOffline);
       window.removeEventListener("online", goOnline);
@@ -73,19 +85,24 @@ function NoInternetOverlay() {
 
   return (
     <div className="fixed inset-0 z-[9998] flex flex-col items-center justify-center bg-white px-8 text-center">
-      <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-6">
-        <WifiOff className="h-12 w-12 text-gray-400" />
+      <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gray-100 text-4xl">
+        📶
       </div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">No Internet Connection</h2>
-      <p className="text-gray-500 text-sm mb-8 max-w-xs">
+
+      <h2 className="mb-2 text-2xl font-bold text-gray-900">
+        No Internet Connection
+      </h2>
+
+      <p className="mb-8 max-w-xs text-sm text-gray-500">
         Please check your Wi-Fi or cellular data and try again.
       </p>
+
       <button
         onClick={() => window.location.reload()}
-        className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-full font-semibold shadow-lg active:scale-95 transition-transform"
+        className="flex items-center gap-2 rounded-full bg-blue-600 px-6 py-3 font-semibold text-white shadow-lg transition-transform active:scale-95"
       >
-        <RefreshCw className="h-4 w-4" />
-        Try Again
+        <span>🔄</span>
+        <span>Try Again</span>
       </button>
     </div>
   );
@@ -106,17 +123,23 @@ function PullToRefresh() {
     }
   }, []);
 
-  const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (!isPullingRef.current || refreshing) return;
-    const delta = e.touches[0].clientY - startYRef.current;
-    if (delta > 0) {
-      setPullY(Math.min(delta * 0.45, THRESHOLD + 16));
-    }
-  }, [refreshing]);
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (!isPullingRef.current || refreshing) return;
+
+      const delta = e.touches[0].clientY - startYRef.current;
+      if (delta > 0) {
+        setPullY(Math.min(delta * 0.45, THRESHOLD + 16));
+      }
+    },
+    [refreshing]
+  );
 
   const handleTouchEnd = useCallback(() => {
     if (!isPullingRef.current) return;
+
     isPullingRef.current = false;
+
     if (pullY >= THRESHOLD) {
       setRefreshing(true);
       setTimeout(() => window.location.reload(), 700);
@@ -129,6 +152,7 @@ function PullToRefresh() {
     document.addEventListener("touchstart", handleTouchStart, { passive: true });
     document.addEventListener("touchmove", handleTouchMove, { passive: true });
     document.addEventListener("touchend", handleTouchEnd, { passive: true });
+
     return () => {
       document.removeEventListener("touchstart", handleTouchStart);
       document.removeEventListener("touchmove", handleTouchMove);
@@ -147,14 +171,14 @@ function PullToRefresh() {
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 z-[9997] flex items-center justify-center pointer-events-none"
+      className="pointer-events-none fixed left-0 right-0 top-0 z-[9997] flex items-center justify-center"
       style={{
         height: `${Math.max(pullY, refreshing ? 56 : 0)}px`,
         transition: refreshing ? "none" : "height 0.1s ease",
       }}
     >
       <div
-        className="bg-white rounded-full shadow-lg flex items-center justify-center"
+        className="flex items-center justify-center rounded-full bg-white shadow-lg"
         style={{
           width: size,
           height: size,
@@ -165,16 +189,35 @@ function PullToRefresh() {
       >
         {refreshing ? (
           <svg width="22" height="22" viewBox="0 0 22 22" className="animate-spin">
-            <circle cx="11" cy="11" r={radius - 2} fill="none" stroke="#2563eb" strokeWidth="2.5" strokeDasharray={`${circumference * 0.75} ${circumference * 0.25}`} strokeLinecap="round" />
+            <circle
+              cx="11"
+              cy="11"
+              r={radius - 2}
+              fill="none"
+              stroke="#2563eb"
+              strokeWidth="2.5"
+              strokeDasharray={`${circumference * 0.75} ${circumference * 0.25}`}
+              strokeLinecap="round"
+            />
           </svg>
         ) : (
           <svg
             width="22"
             height="22"
             viewBox="0 0 22 22"
-            style={{ transform: `rotate(${rotation}deg)`, transition: "transform 0.05s linear" }}
+            style={{
+              transform: `rotate(${rotation}deg)`,
+              transition: "transform 0.05s linear",
+            }}
           >
-            <circle cx="11" cy="11" r={radius - 2} fill="none" stroke="#e2e8f0" strokeWidth="2.5" />
+            <circle
+              cx="11"
+              cy="11"
+              r={radius - 2}
+              fill="none"
+              stroke="#e2e8f0"
+              strokeWidth="2.5"
+            />
             <circle
               cx="11"
               cy="11"
@@ -238,32 +281,82 @@ function Router() {
       <Route path="/auth">
         {isAuthenticated ? <Redirect to="/" /> : <Auth />}
       </Route>
+
       <Route path="/pending">
         {isAuthenticated ? <Redirect to="/" /> : <Redirect to="/auth" />}
       </Route>
 
-      <Route path="/"><Home /></Route>
-      <Route path="/categories"><Categories /></Route>
-      <Route path="/offers"><Offers /></Route>
-      <Route path="/privacy-policy"><PrivacyPolicy /></Route>
-      <Route path="/delete-account"><DeleteAccount /></Route>
+      <Route path="/">
+        <Home />
+      </Route>
 
-      <Route path="/profile"><ProtectedRoute component={Profile} /></Route>
-      <Route path="/referrals"><ProtectedRoute component={Referrals} /></Route>
+      <Route path="/categories">
+        <Categories />
+      </Route>
 
-      <Route path="/admin-login"><AdminLogin /></Route>
-      <Route path="/admin"><AdminProtectedRoute component={Admin} /></Route>
-      <Route path="/admin/products"><AdminProtectedRoute component={AdminProducts} /></Route>
-      <Route path="/admin/services"><AdminProtectedRoute component={AdminServices} /></Route>
-      <Route path="/admin/accounts"><AdminProtectedRoute component={AdminAccounts} /></Route>
+      <Route path="/offers">
+        <Offers />
+      </Route>
 
-      <Route path="/staff-auth"><StaffAuth /></Route>
-      <Route path="/staff-pending"><StaffPending /></Route>
-      <Route path="/staff"><StaffProtectedRoute component={StaffDashboard} /></Route>
+      <Route path="/privacy-policy">
+        <PrivacyPolicy />
+      </Route>
 
-      <Route path="/seller-auth"><SellerAuth /></Route>
-      <Route path="/seller-pending"><SellerPending /></Route>
-      <Route path="/seller"><SellerProtectedRoute component={SellerDashboard} /></Route>
+      <Route path="/delete-account">
+        <DeleteAccount />
+      </Route>
+
+      <Route path="/profile">
+        <ProtectedRoute component={Profile} />
+      </Route>
+
+      <Route path="/referrals">
+        <ProtectedRoute component={Referrals} />
+      </Route>
+
+      <Route path="/admin-login">
+        <AdminLogin />
+      </Route>
+
+      <Route path="/admin">
+        <AdminProtectedRoute component={Admin} />
+      </Route>
+
+      <Route path="/admin/products">
+        <AdminProtectedRoute component={AdminProducts} />
+      </Route>
+
+      <Route path="/admin/services">
+        <AdminProtectedRoute component={AdminServices} />
+      </Route>
+
+      <Route path="/admin/accounts">
+        <AdminProtectedRoute component={AdminAccounts} />
+      </Route>
+
+      <Route path="/staff-auth">
+        <StaffAuth />
+      </Route>
+
+      <Route path="/staff-pending">
+        <StaffPending />
+      </Route>
+
+      <Route path="/staff">
+        <StaffProtectedRoute component={StaffDashboard} />
+      </Route>
+
+      <Route path="/seller-auth">
+        <SellerAuth />
+      </Route>
+
+      <Route path="/seller-pending">
+        <SellerPending />
+      </Route>
+
+      <Route path="/seller">
+        <SellerProtectedRoute component={SellerDashboard} />
+      </Route>
 
       <Route component={NotFound} />
     </Switch>
@@ -278,15 +371,22 @@ function AuthVerifier({ children }: { children: React.ReactNode }) {
     const verifyUser = async () => {
       if (isAuthenticated && user?.email) {
         try {
-          const res = await fetch(`/api/customers`);
+          const res = await fetch("/api/customers");
+
           if (res.ok) {
             const customers = await res.json();
-            const currentUser = customers.find((c: any) =>
-              c.username === user.email || c.phone === user.phone || c.email === user.email
+
+            const currentUser = customers.find(
+              (c: any) =>
+                c.username === user.email ||
+                c.phone === user.phone ||
+                c.email === user.email
             );
+
             if (currentUser) {
               const isApproved = currentUser.approvalStatus === "approved";
               const isAdmin = String(currentUser.isAdmin) === "true";
+
               if (isApproved !== user.isApproved || isAdmin !== user.isAdmin) {
                 login({ ...currentUser, isAdmin });
               }
@@ -297,8 +397,9 @@ function AuthVerifier({ children }: { children: React.ReactNode }) {
         }
       }
     };
+
     verifyUser();
-  }, [isAuthenticated, user?.email]);
+  }, [isAuthenticated, user?.email, user?.phone, user?.isApproved, user?.isAdmin, login]);
 
   return <>{children}</>;
 }
@@ -308,8 +409,12 @@ function ReferralCapture() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const refCode = params.get("ref");
-    if (refCode) localStorage.setItem("referralCode", refCode);
+
+    if (refCode) {
+      localStorage.setItem("referralCode", refCode);
+    }
   }, []);
+
   return null;
 }
 
