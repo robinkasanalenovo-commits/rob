@@ -1,13 +1,9 @@
-import { useLocation } from "wouter";
-
 interface BottomNavProps {
   onCartClick: () => void;
   onHomeClick?: () => void;
 }
 
 export function BottomNav({ onCartClick, onHomeClick }: BottomNavProps) {
-  const [location] = useLocation();
-
   return (
     <div
       style={{
