@@ -7,34 +7,30 @@ interface BottomNavProps {
 
 export function BottomNav({ onCartClick, onHomeClick }: BottomNavProps) {
   return (
-    <div
-      style={{
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        background: "white",
-        padding: "10px",
-        borderTop: "1px solid #ccc",
-        display: "flex",
-        justifyContent: "space-around",
-      }}
-    >
-      <button onClick={onHomeClick}>
-        <Home size={20} />
-      </button>
+    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white shadow">
+      <div className="flex h-16 items-center justify-around">
+        
+        <button className="flex flex-col items-center text-gray-600">
+          <Home size={20} />
+          <span className="text-xs">Home</span>
+        </button>
 
-      <button>
-        <Grid size={20} />
-      </button>
+        <button className="flex flex-col items-center text-gray-600">
+          <Grid size={20} />
+          <span className="text-xs">Categories</span>
+        </button>
 
-      <button onClick={onCartClick}>
-        <ShoppingCart size={20} />
-      </button>
+        <button onClick={onCartClick} className="flex flex-col items-center text-gray-600">
+          <ShoppingCart size={20} />
+          <span className="text-xs">Cart</span>
+        </button>
 
-      <button>
-        <User size={20} />
-      </button>
+        <button className="flex flex-col items-center text-gray-600">
+          <User size={20} />
+          <span className="text-xs">Profile</span>
+        </button>
+
+      </div>
     </div>
   );
 }
