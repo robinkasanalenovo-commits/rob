@@ -30,6 +30,32 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "dist/public"),
     emptyOutDir: true,
+    cssCodeSplit: true,
+    chunkSizeWarningLimit: 1600,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            if (id.includes("react") || id.includes("react-dom")) {
+              return "react-vendor";
+            }
+            if (id.includes("@radix-ui")) {
+              return "radix-vendor";
+            }
+            if (id.includes("@tanstack/react-query")) {
+              return "query-vendor";
+            }
+            if (id.includes("framer-motion")) {
+              return "motion-vendor";
+            }
+            if (id.includes("jspdf") || id.includes("html2canvas")) {
+              return "pdf-vendor";
+            }
+            return "vendor";
+          }
+        },
+      },
+    },
   },
   server: {
     host: "0.0.0.0",
