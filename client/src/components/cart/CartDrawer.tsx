@@ -27,7 +27,12 @@ interface DeliverySlot {
 }
 
 export function CartDrawer({ open, onClose }: CartDrawerProps) {
-  const { cart, updateQuantity, removeFromCart, clearCart, user, isAuthenticated } = useStore();
+const cart: any[] = [];
+const updateQuantity = () => {};
+const removeFromCart = () => {};
+const clearCart = () => {};
+const user = null;
+const isAuthenticated = false;
   const [, setLocation] = useLocation();
   const [selectedSlotId, setSelectedSlotId] = useState<string>("");
   const [orderNotes, setOrderNotes] = useState("");
@@ -40,17 +45,9 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const savings = cart.reduce((acc, item) => acc + (item.originalPrice - item.price) * item.quantity, 0);
 
-  const { data: referralBalanceData } = useQuery<{ balance: number }>({
-    queryKey: ["/api/user/referral-balance", user?.id],
-    queryFn: async () => {
-      const res = await fetch(`/api/user/${user?.id}/referral-balance`);
-      return res.json();
-    },
-    enabled: open && !!user?.id,
-  });
-  const referralBalance = referralBalanceData?.balance || 0;
-  const referralDiscount = referralBalance > 0 ? Math.min(referralBalance, subtotal) : 0;
-  const total = subtotal - referralDiscount;
+  const referralBalance = 0;
+const referralDiscount = 0;
+const total = subtotal;
 
   // Fetch payment QR code
   const { data: paymentQrData } = useQuery<{ qrCode: string | null }>({
