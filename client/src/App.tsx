@@ -1,15 +1,16 @@
-import { CartDrawer } from "@/components/cart/CartDrawer";
-import { useState } from "react";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 export default function App() {
-  const [isCartOpen, setIsCartOpen] = useState(true);
-
   return (
     <div>
-      <CartDrawer open={isCartOpen} onClose={() => setIsCartOpen(false)} />
       <div style={{ padding: "20px", fontSize: "24px" }}>
-        CartDrawer Test ✅
+        BottomNav Test ✅
       </div>
+
+      <BottomNav
+        onCartClick={() => {}}
+        onHomeClick={() => {}}
+      />
     </div>
   );
 }
