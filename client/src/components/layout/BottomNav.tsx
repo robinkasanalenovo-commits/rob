@@ -1,3 +1,5 @@
+import { Home, Grid, ShoppingCart, User } from "lucide-react";
+
 interface BottomNavProps {
   onCartClick: () => void;
   onHomeClick?: () => void;
@@ -18,10 +20,21 @@ export function BottomNav({ onCartClick, onHomeClick }: BottomNavProps) {
         justifyContent: "space-around",
       }}
     >
-      <button onClick={onHomeClick}>Home</button>
-      <button>Categories</button>
-      <button onClick={onCartClick}>Cart</button>
-      <button>Profile</button>
+      <button onClick={onHomeClick}>
+        <Home size={20} />
+      </button>
+
+      <button>
+        <Grid size={20} />
+      </button>
+
+      <button onClick={onCartClick}>
+        <ShoppingCart size={20} />
+      </button>
+
+      <button>
+        <User size={20} />
+      </button>
     </div>
   );
 }
