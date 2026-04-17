@@ -7,7 +7,6 @@ import { ServiceCard } from "@/components/product/ServiceCard";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { HorizontalProductScroll } from "@/components/product/HorizontalProductScroll";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, ChevronRight, Tv, Droplets, Smartphone, Leaf, Cherry, Milk, Heart, House, Shirt, Baby, Car, Dumbbell, Book, Music, Camera, Gamepad2, Utensils, ShoppingBag, Gift, Coffee, Pizza, Sparkles, Package, LayoutGrid, RefreshCw, ChevronLeft, Tag } from "lucide-react";
 import { Link } from "wouter";
 
 import vegImg from "@assets/stock_images/fresh_vegetables_bas_43c891f5.jpg";
@@ -81,10 +80,6 @@ interface Product {
   sortOrder: number;
   hasVariants: boolean;
 }
-
-const LUCIDE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  Tv, Droplets, Smartphone, Heart, Home: House, House, Shirt, Baby, Car, Dumbbell, Book, Music, Camera, Gamepad2, Utensils, Leaf, Cherry, Milk, ShoppingBag, Gift, Coffee, Pizza, Sparkles, Package, LayoutGrid
-};
 
 export default function Home() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -258,11 +253,6 @@ export default function Home() {
     .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
   
-  const getCategoryIcon = (iconKey: string | null) => {
-    if (!iconKey || !LUCIDE_ICONS[iconKey]) return LayoutGrid;
-    return LUCIDE_ICONS[iconKey];
-  };
-
   const categories = [
     { id: "all", name: "All", image: null },
     ...dynamicCategories.map(cat => ({
@@ -327,14 +317,14 @@ export default function Home() {
                       className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 rounded-full shadow-lg transition-all"
                       data-testid="banner-prev"
                     >
-                      <ChevronLeft className="h-4 w-4 text-gray-800" />
+                      <span>⬅️</span>
                     </button>
                     <button
                       onClick={nextBanner}
                       className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 rounded-full shadow-lg transition-all"
                       data-testid="banner-next"
                     >
-                      <ChevronRight className="h-4 w-4 text-gray-800" />
+                      <span>➡️</span>
                     </button>
                     <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
                       {banners.map((_, index) => (
@@ -387,14 +377,14 @@ export default function Home() {
               <h3 className="text-base font-bold text-foreground mb-4 px-1">Shop by category</h3>
               {categoriesLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <RefreshCw className="h-6 w-6 animate-spin text-primary" />
+                  <div className="text-xl">🔄</div>
                 </div>
               ) : dynamicCategories.length === 0 ? (
                 <p className="text-center text-muted-foreground py-4">No categories available</p>
               ) : (
             <div className="grid grid-cols-3 gap-2 px-1">
             {dynamicCategories.map(cat => {
-                    const IconComponent = getCategoryIcon(cat.iconKey);
+                    const IconComponent = null;
                     return (
                       <button 
                         key={cat.id} 
@@ -407,7 +397,7 @@ export default function Home() {
                           {cat.imageUrl ? (
                             <img src={cat.imageUrl} alt={cat.name} className="h-full w-full object-cover" />
                           ) : (
-                            <IconComponent className={`h-14 w-14 ${cat.textColor || "text-gray-600"}`} />
+                            <div className={`text-2xl ${cat.textColor || "text-gray-600"}`}>📦</div>
                           )}
                         </div>
                         <span className={`text-sm font-bold text-center leading-tight break-words ${cat.textColor || "text-gray-900"}`}>
@@ -426,7 +416,7 @@ export default function Home() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
-                      <Tag className="h-3.5 w-3.5 text-white" />
+                      <span>🏷️</span>
                     </div>
                     <h2 className="text-base font-bold text-gray-900">Today's Offers</h2>
                   </div>
@@ -537,7 +527,7 @@ export default function Home() {
             
             {filteredProducts.length === 0 && (
               <div className="flex flex-col items-center justify-center py-12 text-muted-foreground text-center">
-                <Search className="h-10 w-10 mb-3 opacity-20" />
+                <div className="text-3xl mb-3">🔍</div>
                 <p className="text-base font-medium">No matches found</p>
                 <p className="text-xs">Try searching for something else</p>
               </div>
