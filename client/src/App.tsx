@@ -10,12 +10,10 @@ export default function App() {
   return (
     <div className="min-h-screen bg-white pb-24">
       <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-
       <CartDrawer open={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
       <main className="container mx-auto px-3 py-4">
-        <h2 className="text-xl font-bold">Test Home Page ✅</h2>
-        <p className="mt-2 text-sm text-gray-600">App is rendering properly.</p>
+        <h2 className="text-xl font-bold">Header Test ✅</h2>
       </main>
 
       <BottomNav
