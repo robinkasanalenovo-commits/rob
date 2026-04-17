@@ -1,11 +1,14 @@
-import { Header } from "@/components/layout/Header";
+import { CartDrawer } from "@/components/cart/CartDrawer";
+import { useState } from "react";
 
 export default function App() {
+  const [isCartOpen, setIsCartOpen] = useState(true);
+
   return (
     <div>
-      <Header searchQuery="" setSearchQuery={() => {}} />
+      <CartDrawer open={isCartOpen} onClose={() => setIsCartOpen(false)} />
       <div style={{ padding: "20px", fontSize: "24px" }}>
-        Header Only Test ✅
+        CartDrawer Test ✅
       </div>
     </div>
   );
