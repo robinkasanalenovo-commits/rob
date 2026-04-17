@@ -1,13 +1,11 @@
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = process.cwd();
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(__dirname, "../dist/public");
+  const distPath = path.resolve(__dirname, "dist/public");
   const indexPath = path.resolve(distPath, "index.html");
 
   if (!fs.existsSync(distPath) || !fs.existsSync(indexPath)) {
